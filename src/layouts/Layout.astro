@@ -21,6 +21,7 @@ const { title, description = "Find and share referral codes for your favorite ap
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
     <ViewTransitions />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.css" />
 	</head>
 	<body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
 		<Header />
@@ -50,6 +51,34 @@ const { title, description = "Find and share referral codes for your favorite ap
         document.documentElement.classList.remove('loading-page');
       });
     </script>
+
+    <script>
+      // NProgress integration
+      import NProgress from 'nprogress';
+      
+      // Configure NProgress
+      NProgress.configure({ 
+        showSpinner: false,
+        minimum: 0.1,
+        easing: 'ease',
+        speed: 300
+      });
+      
+      // Start NProgress when navigation begins
+      document.addEventListener('astro:before-preparation', () => {
+        NProgress.start();
+      });
+      
+      // Complete NProgress when page is loaded
+      document.addEventListener('astro:page-load', () => {
+        NProgress.done();
+      });
+      
+      // Also handle potential navigation errors
+      document.addEventListener('astro:after-swap', () => {
+        NProgress.done();
+      });
+    </script>
 	</body>
 </html>
 
@@ -69,5 +98,15 @@ const { title, description = "Find and share referral codes for your favorite ap
   
   .animate-pulse {
     animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  /* Customize NProgress bar */
+  #nprogress .bar {
+    background: #4f46e5 !important; /* primary-600 color */
+    height: 3px !important;
+  }
+  
+  #nprogress .peg {
+    box-shadow: 0 0 10px #4f46e5, 0 0 5px #4f46e5 !important;
   }
 </style>

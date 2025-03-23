@@ -15,7 +15,9 @@
     "@astrojs/react": "latest",
     "@astrojs/tailwind": "latest",
     "@supabase/supabase-js": "latest",
+    "@types/nprogress": "^0.2.3",
     "astro": "latest",
+    "nprogress": "^0.2.0",
     "react": "latest",
     "react-dom": "latest",
     "tailwindcss": "latest"

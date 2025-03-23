@@ -1,15 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ReferralListClient from '../components/ReferralListClient';
 import { supabase } from '../lib/supabase';
+import ReferralListClient from '../components/ReferralListClient';
 
 // Get query parameters
 const { searchParams } = Astro.url;
 const page = parseInt(searchParams.get('page') || '1');
-const categoryId = searchParams.get('category');
 const search = searchParams.get('search');
+const categoryId = searchParams.get('category');
 
+// Set page size
 const pageSize = 12;
+
+// Calculate offset for pagination
 const offset = (page - 1) * pageSize;
 
 // Build query
@@ -17,7 +20,6 @@ let query = supabase
   .from('referral_codes')
   .select('*, categories(name)', { count: 'exact' });
 
-// Apply filters if provided
 if (categoryId) {
   query = query.eq('category_id', categoryId);
 }
@@ -27,7 +29,7 @@ if (search) {
 }
 
 // Execute query with pagination
-const { data: referrals, count } = await query
+const { data: referrals, count, error } = await query
   .order('created_at', { ascending: false })
   .range(offset, offset + pageSize - 1);
 
@@ -35,17 +37,18 @@ const { data: referrals, count } = await query
 const totalPages = count ? Math.ceil(count / pageSize) : 0;
 ---
 
-<Layout title="All Referral Codes - ReferralHub">
-  <div class="max-w-7xl mx-auto">
-    <h1 class="text-3xl font-bold text-gray-900 mb-8">All Referral Codes</h1>
-    
-    <ReferralListClient 
-      initialReferrals={referrals || []} 
-      categoryId={categoryId}
-      search={search}
-      page={page}
-      totalPages={totalPages}
-      client:load
-    />
+<Layout title="All Referral Codes | Find and Share Referrals">
+  <div class="mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">All Referral Codes</h1>
+    <p class="mt-2 text-gray-600">Browse and search for referral codes across various services and apps.</p>
   </div>
+  
+  <ReferralListClient 
+    initialReferrals={referrals || []} 
+    categoryId={categoryId}
+    search={search}
+    page={page}
+    totalPages={totalPages}
+    client:load
+  />
 </Layout>
