@@ -1,0 +1,27 @@
+/* empty css                                 */
+import { e as createComponent, i as renderComponent, r as renderTemplate, m as maybeRenderHead } from '../chunks/astro/server_CrNoV3M9.mjs';
+import 'kleur/colors';
+import { $ as $$Layout } from '../chunks/Layout_DCOM5V2o.mjs';
+export { renderers } from '../renderers.mjs';
+
+const $$404 = createComponent(($$result, $$props, $$slots) => {
+  return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": "Page Not Found - ReferralHub" }, { "default": ($$result2) => renderTemplate` ${maybeRenderHead()}<div class="max-w-3xl mx-auto text-center py-16"> <h1 class="text-6xl font-bold text-primary-600 mb-4">404</h1> <h2 class="text-3xl font-semibold text-gray-900 mb-6">Page Not Found</h2> <p class="text-xl text-gray-600 mb-8">
+The page you're looking for doesn't exist or has been moved.
+</p> <a href="/" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700">
+Go Back Home
+<svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor"> <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"></path> </svg> </a> </div> ` })}`;
+}, "/home/project/src/pages/404.astro", void 0);
+
+const $$file = "/home/project/src/pages/404.astro";
+const $$url = "/404";
+
+const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: $$404,
+  file: $$file,
+  url: $$url
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const page = () => _page;
+
+export { page };

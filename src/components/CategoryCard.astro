@@ -1,0 +1,27 @@
+---
+interface Props {
+  id: number;
+  name: string;
+  slug: string;
+  description: string | null;
+  count: number;
+}
+
+const { id, name, slug, description, count } = Astro.props;
+---
+
+<a href={`/category/${slug}`} class="block">
+  <div class="bg-white rounded-md shadow overflow-hidden hover:shadow-md transition-shadow h-full">
+    <div class="p-4">
+      <h3 class="text-lg font-semibold text-gray-900">{name}</h3>
+      
+      {description && (
+        <p class="mt-1 text-sm text-gray-600 line-clamp-2">{description}</p>
+      )}
+      
+      <div class="mt-2 text-xs text-gray-500">
+        {count} {count === 1 ? 'referral code' : 'referral codes'}
+      </div>
+    </div>
+  </div>
+</a>

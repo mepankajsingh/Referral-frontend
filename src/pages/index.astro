@@ -1,0 +1,79 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ReferralCard from '../components/ReferralCard.astro';
+import CategoryCard from '../components/CategoryCard.astro';
+import Hero from '../components/Hero.astro';
+import { supabase } from '../lib/supabase';
+
+// Fetch featured referral codes (most recent 6)
+const { data: featuredReferrals } = await supabase
+  .from('referral_codes')
+  .select('*, categories(name)')
+  .order('created_at', { ascending: false })
+  .limit(6);
+
+// Fetch categories with referral code counts
+const { data: categoriesWithCounts } = await supabase
+  .from('categories')
+  .select(`
+    id,
+    name,
+    slug,
+    description,
+    referral_codes:referral_codes(count)
+  `)
+  .order('name');
+
+// Process categories to extract counts
+const categories = categoriesWithCounts?.map(category => ({
+  id: category.id,
+  name: category.name,
+  slug: category.slug,
+  description: category.description,
+  count: category.referral_codes.length
+}));
+---
+
+<Layout title="ReferralHub - Find and Share Referral Codes">
+  <Hero />
+  
+  <section class="mt-8">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-bold text-gray-900">Featured Referral Codes</h2>
+      <a href="/referrals" class="text-primary-600 hover:text-primary-800 text-sm font-medium">View all</a>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {featuredReferrals && featuredReferrals.map((referral) => (
+        <ReferralCard
+          id={referral.id}
+          appName={referral.app_name}
+          code={referral.code}
+          description={referral.description}
+          url={referral.url}
+          userBenefit={referral.user_benefit}
+          referrerBenefit={referral.referrer_benefit}
+        />
+      ))}
+    </div>
+  </section>
+  
+  <section class="mt-10">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-bold text-gray-900">Browse Categories</h2>
+      <a href="/categories" class="text-primary-600 hover:text-primary-800 text-sm font-medium">View all</a>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {categories && categories.map((category) => (
+        <CategoryCard
+          id={category.id}
+          name={category.name}
+          slug={category.slug}
+          description={category.description}
+          count={category.count}
+        />
+      ))}
+    </div>
+  </section>
+</Layout>
