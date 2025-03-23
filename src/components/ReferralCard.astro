@@ -12,9 +12,7 @@ interface Props {
 }
 
 const { id, appName, code, description, url, userBenefit, referrerBenefit, icon, slug } = Astro.props;
-// Remove numbers from slug if present, otherwise use ID
-const cleanSlug = slug ? slug.replace(/-\d+$/, '') : id;
-const detailUrl = `/referral/${cleanSlug}`;
+const detailUrl = slug ? `/referral/${slug}` : `/referral/${id}`;
 ---
 
 <div class="bg-white rounded-md shadow overflow-hidden hover:shadow-md transition-shadow">
