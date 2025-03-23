@@ -44,6 +44,9 @@ export interface Database {
           created_at: string
           user_benefit: string | null
           referrer_benefit: string | null
+          icon: string | null
+          slug: string | null
+          meta_title: string | null
         }
         Insert: {
           id?: number
@@ -55,6 +58,9 @@ export interface Database {
           created_at?: string
           user_benefit?: string | null
           referrer_benefit?: string | null
+          icon?: string | null
+          slug?: string | null
+          meta_title?: string | null
         }
         Update: {
           id?: number
@@ -66,6 +72,9 @@ export interface Database {
           created_at?: string
           user_benefit?: string | null
           referrer_benefit?: string | null
+          icon?: string | null
+          slug?: string | null
+          meta_title?: string | null
         }
         Relationships: [
           {

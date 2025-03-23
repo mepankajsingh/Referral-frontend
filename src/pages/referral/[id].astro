@@ -4,11 +4,11 @@ import { supabase } from '../../lib/supabase';
 import ReferralCodeClient from '../../components/ReferralCodeClient';
 import ReferralDetailSkeleton from '../../components/ReferralDetailSkeleton';
 
-// Get the referral ID from the URL
+// Get the referral ID or slug from the URL
 const { id } = Astro.params;
 
-// Fetch the referral data
-const { data: referral, error } = await supabase
+// Fetch the referral data - try by slug first, then by id if needed
+let referralQuery = supabase
   .from('referral_codes')
   .select(`
     *,
@@ -17,9 +17,18 @@ const { data: referral, error } = await supabase
       name,
       slug
     )
-  `)
-  .eq('id', id)
-  .single();
+  `);
+
+// Check if id is numeric or a slug
+const isNumeric = /^\d+$/.test(id);
+
+if (isNumeric) {
+  referralQuery = referralQuery.eq('id', id);
+} else {
+  referralQuery = referralQuery.eq('slug', id);
+}
+
+const { data: referral, error } = await referralQuery.single();
 
 // Handle 404 if referral not found
 if (error || !referral) {
@@ -36,13 +45,16 @@ const formattedDate = new Date(referral.created_at).toLocaleDateString('en-US', 
 // Get related referrals from the same category
 const { data: relatedReferrals } = await supabase
   .from('referral_codes')
-  .select('id, app_name')
+  .select('id, app_name, slug')
   .eq('category_id', referral.category_id)
-  .neq('id', id)
+  .neq('id', referral.id)
   .limit(5);
 ---
 
-<Layout title={`${referral.app_name} Referral Code | Referral Platform`} description={referral.description || `Get ${referral.app_name} referral code and save with our exclusive offer.`}>
+<Layout 
+  title={referral.meta_title || `${referral.app_name} Referral Code | Referral Platform`} 
+  description={referral.description || `Get ${referral.app_name} referral code and save with our exclusive offer.`}
+>
   <div class="mb-6">
     <a href="/referrals" class="text-primary-600 hover:text-primary-800 flex items-center">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -54,16 +66,28 @@ const { data: relatedReferrals } = await supabase
 
   <div class="bg-white rounded-lg shadow-md p-6">
     <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
-      <div>
-        <h1 class="text-2xl font-bold text-gray-900">{referral.app_name}</h1>
-        <div class="mt-2">
-          <a 
-            href={`/category/${referral.categories.slug}`}
-            class="inline-block bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full"
-          >
-            {referral.categories.name}
-          </a>
-          <span class="text-xs text-gray-500 ml-2">Added on {formattedDate}</span>
+      <div class="flex items-center">
+        {referral.icon && (
+          <div class="mr-4 w-16 h-16 flex-shrink-0">
+            <img src={referral.icon} alt={`${referral.app_name} icon`} class="w-full h-full object-contain rounded" />
+          </div>
+        )}
+        {!referral.icon && (
+          <div class="mr-4 w-16 h-16 flex-shrink-0 bg-primary-100 rounded flex items-center justify-center">
+            <span class="text-primary-700 font-bold text-2xl">{referral.app_name.charAt(0)}</span>
+          </div>
+        )}
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">{referral.app_name}</h1>
+          <div class="mt-2">
+            <a 
+              href={`/category/${referral.categories.slug}`}
+              class="inline-block bg-primary-100 text-primary-800 text-xs px-2 py-1 rounded-full"
+            >
+              {referral.categories.name}
+            </a>
+            <span class="text-xs text-gray-500 ml-2">Added on {formattedDate}</span>
+          </div>
         </div>
       </div>
       
@@ -126,7 +150,7 @@ const { data: relatedReferrals } = await supabase
           {relatedReferrals.map(related => (
             <li>
               <a 
-                href={`/referral/${related.id}`} 
+                href={`/referral/${related.slug || related.id}`} 
                 class="text-primary-600 hover:underline"
               >
                 {related.app_name}
