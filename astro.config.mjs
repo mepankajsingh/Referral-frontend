@@ -10,7 +10,5 @@ export default defineConfig({
     react()
   ],
   output: 'server',
-  adapter: netlify({
-    edgeMiddleware: true
-  })
+  adapter: netlify()
 });
