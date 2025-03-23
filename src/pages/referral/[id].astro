@@ -21,7 +21,8 @@ const { data: referral, error } = await supabase
   .eq('id', id)
   .single();
 
-// Handle 404 if referral not foundif (error || !referral) {
+// Handle 404 if referral not found
+if (error || !referral) {
   return Astro.redirect('/404');
 }
 
