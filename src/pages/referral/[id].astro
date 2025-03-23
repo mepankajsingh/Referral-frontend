@@ -25,15 +25,77 @@ const isNumeric = /^\d+$/.test(id);
 if (isNumeric) {
   referralQuery = referralQuery.eq('id', id);
 } else {
-  referralQuery = referralQuery.eq('slug', id);
+  // For slugs, we need to handle both formats:
+  // 1. Old format: app-name-123 (with numbers at the end)
+  // 2. New format: app-name (without numbers)
+  
+  // First try exact match
+  const { data: exactMatch, error: exactMatchError } = await referralQuery.eq('slug', id).single();
+  
+  if (!exactMatch) {
+    // If no exact match, try to find by base slug (without the numbers)
+    // This handles the case where URLs might still have the old format
+    const baseSlug = id.replace(/-\d+$/, '');
+    referralQuery = supabase
+      .from('referral_codes')
+      .select(`
+        *,
+        categories(
+          id,
+          name,
+          slug
+        )
+      `)
+      .ilike('slug', `${baseSlug}%`)
+      .order('created_at', { ascending: false });
+  } else {
+    // We found an exact match, so use that
+    const { data: referral, error } = await referralQuery.single();
+    
+    // Handle 404 if referral not found
+    if (error || !referral) {
+      return Astro.redirect('/404');
+    }
+    
+    // Format date
+    const formattedDate = new Date(referral.created_at).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    
+    // Get related referrals from the same category
+    const { data: relatedReferrals } = await supabase
+      .from('referral_codes')
+      .select('id, app_name, slug')
+      .eq('category_id', referral.category_id)
+      .neq('id', referral.id)
+      .limit(5);
+      
+    // Generate clean slugs for related referrals
+    const relatedWithCleanSlugs = relatedReferrals?.map(related => ({
+      ...related,
+      cleanSlug: related.slug ? related.slug.replace(/-\d+$/, '') : related.id
+    }));
+    
+    // Render the page with the referral data
+    const pageTitle = referral.meta_title || `${referral.app_name} Referral Code | Referral Platform`;
+    const pageDescription = referral.description || `Get ${referral.app_name} referral code and save with our exclusive offer.`;
+    
+    // Continue with the rest of the component...
+  }
 }
 
-const { data: referral, error } = await referralQuery.single();
+// Execute the query
+const { data: referrals, error: referralsError } = await referralQuery;
 
-// Handle 404 if referral not found
-if (error || !referral) {
+// Handle 404 if no referrals found
+if (referralsError || !referrals || referrals.length === 0) {
   return Astro.redirect('/404');
 }
+
+// Use the first result (most recent if multiple matches)
+const referral = referrals[0];
 
 // Format date
 const formattedDate = new Date(referral.created_at).toLocaleDateString('en-US', {
@@ -49,6 +111,12 @@ const { data: relatedReferrals } = await supabase
   .eq('category_id', referral.category_id)
   .neq('id', referral.id)
   .limit(5);
+
+// Generate clean slugs for related referrals
+const relatedWithCleanSlugs = relatedReferrals?.map(related => ({
+  ...related,
+  cleanSlug: related.slug ? related.slug.replace(/-\d+$/, '') : related.id
+}));
 ---
 
 <Layout 
@@ -143,14 +211,14 @@ const { data: relatedReferrals } = await supabase
       </ol>
     </div>
     
-    {relatedReferrals && relatedReferrals.length > 0 && (
+    {relatedWithCleanSlugs && relatedWithCleanSlugs.length > 0 && (
       <div class="mt-8 border-t border-gray-200 pt-6">
         <h2 class="text-lg font-semibold text-gray-900">Related Referrals</h2>
         <ul class="mt-2 space-y-1">
-          {relatedReferrals.map(related => (
+          {relatedWithCleanSlugs.map(related => (
             <li>
               <a 
-                href={`/referral/${related.slug || related.id}`} 
+                href={`/referral/${related.cleanSlug}`} 
                 class="text-primary-600 hover:underline"
               >
                 {related.app_name}
