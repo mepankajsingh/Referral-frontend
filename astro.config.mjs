@@ -10,5 +10,7 @@ export default defineConfig({
     react()
   ],
   output: 'server',
-  adapter: netlify()
+  adapter: netlify(),
+  // Enable view transitions for SPA-like navigation
+  viewTransitions: true,
 });

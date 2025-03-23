@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { ViewTransitions } from 'astro:transitions';
 
 interface Props {
 	title: string;
@@ -19,12 +20,54 @@ const { title, description = "Find and share referral codes for your favorite ap
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+    <ViewTransitions />
 	</head>
 	<body class="min-h-screen flex flex-col bg-gray-50 text-gray-900">
 		<Header />
-		<main class="flex-grow container mx-auto px-3 py-4 max-w-5xl">
+		<main class="flex-grow container mx-auto px-3 py-4 max-w-5xl" transition:animate="slide">
 			<slot />
 		</main>
 		<Footer />
+    
+    <script>
+      // Handle loading states for navigation
+      document.addEventListener('astro:page-load', () => {
+        console.log('Page loaded');
+      });
+      
+      document.addEventListener('astro:after-swap', () => {
+        // This runs after new page content is swapped in
+        console.log('Content swapped');
+      });
+      
+      document.addEventListener('astro:before-preparation', () => {
+        // Show loading state
+        document.documentElement.classList.add('loading-page');
+      });
+      
+      document.addEventListener('astro:after-preparation', () => {
+        // Hide loading state
+        document.documentElement.classList.remove('loading-page');
+      });
+    </script>
 	</body>
 </html>
+
+<style is:global>
+  .loading-page {
+    cursor: progress;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+  
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+</style>
