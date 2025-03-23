@@ -1,0 +1,44 @@
+/* empty css                                 */
+import { e as createComponent, i as renderComponent, r as renderTemplate, m as maybeRenderHead } from '../chunks/astro/server_Ct226vxg.mjs';
+import 'kleur/colors';
+import 'html-escaper';
+import { $ as $$Layout } from '../chunks/Layout_Bm93SrEs.mjs';
+export { renderers } from '../renderers.mjs';
+
+const $$Terms = createComponent(($$result, $$props, $$slots) => {
+  return renderTemplate`${renderComponent($$result, "Layout", $$Layout, { "title": "Terms of Service - ReferralHub" }, { "default": ($$result2) => renderTemplate` ${maybeRenderHead()}<div class="max-w-3xl mx-auto"> <h1 class="text-3xl font-bold text-gray-900 mb-6">Terms of Service</h1> <div class="prose prose-lg max-w-none"> <p>
+Last updated: May 2023
+</p> <p>
+Please read these Terms of Service carefully before using ReferralHub. Your access to and use of the service 
+        is conditioned on your acceptance of and compliance with these Terms.
+</p> <h2 class="text-2xl font-bold mt-8 mb-4">Use of Service</h2> <p>
+ReferralHub provides a platform for users to find and share referral codes. By using our service, you agree to:
+</p> <ul class="list-disc pl-6 mt-2"> <li>Use the service only for lawful purposes</li> <li>Not share false or misleading information</li> <li>Not attempt to gain unauthorized access to any part of the service</li> <li>Not use the service in any way that could damage or impair the service</li> </ul> <h2 class="text-2xl font-bold mt-8 mb-4">Referral Codes</h2> <p>
+ReferralHub does not guarantee:
+</p> <ul class="list-disc pl-6 mt-2"> <li>The accuracy of referral codes shared on the platform</li> <li>That referral codes will work as described</li> <li>Any specific benefits or rewards from using the referral codes</li> </ul> <p>
+Users are responsible for verifying the terms and conditions of each referral program before use.
+</p> <h2 class="text-2xl font-bold mt-8 mb-4">Limitation of Liability</h2> <p>
+ReferralHub shall not be liable for any indirect, incidental, special, consequential, or punitive damages 
+        resulting from your access to or use of, or inability to access or use, the service.
+</p> <h2 class="text-2xl font-bold mt-8 mb-4">Changes to Terms</h2> <p>
+We reserve the right to modify or replace these Terms at any time. It is your responsibility to review 
+        these Terms periodically for changes.
+</p> <h2 class="text-2xl font-bold mt-8 mb-4">Contact Us</h2> <p>
+If you have any questions about these Terms, please contact us at
+<a href="mailto:terms@referralhub.com" class="text-primary-600 hover:underline">terms@referralhub.com</a>.
+</p> </div> </div> ` })}`;
+}, "/home/project/src/pages/terms.astro", void 0);
+
+const $$file = "/home/project/src/pages/terms.astro";
+const $$url = "/terms";
+
+const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: $$Terms,
+  file: $$file,
+  url: $$url
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const page = () => _page;
+
+export { page };

@@ -1,0 +1,44 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CategoryCard from '../components/CategoryCard.astro';
+import { supabase } from '../lib/supabase';
+
+// Fetch all categories with referral code counts
+const { data: categoriesWithCounts } = await supabase
+  .from('categories')
+  .select(`
+    id,
+    name,
+    slug,
+    description,
+    referral_codes:referral_codes(count)
+  `)
+  .order('name');
+
+// Process categories to extract counts
+const categories = categoriesWithCounts?.map(category => ({
+  id: category.id,
+  name: category.name,
+  slug: category.slug,
+  description: category.description,
+  count: category.referral_codes.length
+}));
+---
+
+<Layout title="Categories - ReferralHub">
+  <div class="max-w-7xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Browse Categories</h1>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      {categories && categories.map((category) => (
+        <CategoryCard
+          id={category.id}
+          name={category.name}
+          slug={category.slug}
+          description={category.description}
+          count={category.count}
+        />
+      ))}
+    </div>
+  </div>
+</Layout>
