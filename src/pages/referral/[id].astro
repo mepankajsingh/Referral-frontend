@@ -49,6 +49,9 @@ const { data: relatedReferrals } = await supabase
   .eq('category_id', referral.category_id)
   .neq('id', referral.id)
   .limit(5);
+
+// Check if screenshots exist and are not empty
+const hasScreenshots = referral.screenshots && Array.isArray(referral.screenshots) && referral.screenshots.length > 0;
 ---
 
 <Layout 
@@ -104,18 +107,6 @@ const { data: relatedReferrals } = await supabase
       </a>
     </div>
     
-    <div class="mt-6">
-      <h2 class="text-lg font-semibold text-gray-900">Description</h2>
-      <p class="mt-2 text-gray-700">{referral.description || "No description available."}</p>
-    </div>
-    
-    <div class="mt-6">
-      <h2 class="text-lg font-semibold text-gray-900">Referral Code</h2>
-      <div class="mt-2 p-4 bg-gray-50 border border-gray-200 rounded-md">
-        <ReferralCodeClient code={referral.code} client:load />
-      </div>
-    </div>
-    
     <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
       <div>
         <h2 class="text-lg font-semibold text-gray-900">What You Get</h2>
@@ -131,6 +122,36 @@ const { data: relatedReferrals } = await supabase
         </div>
       </div>
     </div>
+    
+    <div class="mt-6">
+      <h2 class="text-lg font-semibold text-gray-900">Referral Code</h2>
+      <div class="mt-2 p-4 bg-gray-50 border border-gray-200 rounded-md">
+        <ReferralCodeClient code={referral.code} client:load />
+      </div>
+    </div>
+    
+    <div class="mt-6">
+      <h2 class="text-lg font-semibold text-gray-900">Description</h2>
+      <p class="mt-2 text-gray-700">{referral.description || "No description available."}</p>
+    </div>
+    
+    {hasScreenshots && (
+      <div class="mt-6">
+        <h2 class="text-lg font-semibold text-gray-900">Screenshots</h2>
+        <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {referral.screenshots.map((screenshot: string) => (
+            <div class="border border-gray-200 rounded-md overflow-hidden">
+              <img 
+                src={screenshot} 
+                alt={`${referral.app_name} screenshot`} 
+                class="w-full h-48 object-cover"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
     
     <div class="mt-8">
       <h2 class="text-lg font-semibold text-gray-900">How to Use This Referral</h2>

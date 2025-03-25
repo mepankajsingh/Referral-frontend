@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import ReferralCardReact from './ReferralCardReact';
+import ReferralCardListReact from './ReferralCardListReact';
 import SearchBar from './SearchBar';
 import FilterComponent from './FilterComponent';
 import Pagination from './Pagination';
-import ReferralCardSkeleton from './ReferralCardSkeleton.tsx';
+import ReferralCardSkeleton from './ReferralCardSkeleton';
 
 interface Category {
   id: number;
@@ -33,9 +34,10 @@ interface Props {
   search: string | null;
   page: number;
   totalPages: number;
+  hideFilters?: boolean;
 }
 
-export default function ReferralListClient({ initialReferrals, categoryId, search, page, totalPages }: Props) {
+export default function ReferralListClient({ initialReferrals, categoryId, search, page, totalPages, hideFilters = false }: Props) {
   const [referrals, setReferrals] = useState<Referral[]>(initialReferrals);
   const [categories, setCategories] = useState<Category[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(categoryId);
@@ -59,8 +61,10 @@ export default function ReferralListClient({ initialReferrals, categoryId, searc
       }
     };
     
-    fetchCategories();
-  }, []);
+    if (!hideFilters) {
+      fetchCategories();
+    }
+  }, [hideFilters]);
 
   const fetchReferrals = async () => {
     setIsLoading(true);
@@ -126,30 +130,32 @@ export default function ReferralListClient({ initialReferrals, categoryId, searc
 
   return (
     <div>
-      <div className="mb-6 flex flex-col md:flex-row gap-4">
-        <div className="w-full md:w-2/3">
-          <SearchBar initialValue={searchQuery} onSearch={handleSearch} />
+      {!hideFilters && (
+        <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="md:col-span-2">
+            <SearchBar initialValue={searchQuery} onSearch={handleSearch} />
+          </div>
+          <div className="md:col-span-1">
+            <FilterComponent 
+              categories={categories} 
+              selectedCategory={selectedCategory} 
+              onChange={handleCategoryChange} 
+            />
+          </div>
         </div>
-        <div className="w-full md:w-1/3">
-          <FilterComponent 
-            categories={categories} 
-            selectedCategory={selectedCategory} 
-            onChange={handleCategoryChange} 
-          />
-        </div>
-      </div>
+      )}
       
       {isLoading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="space-y-4">
           {Array(6).fill(0).map((_, index) => (
             <ReferralCardSkeleton key={index} />
           ))}
         </div>
       ) : referrals.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="space-y-4">
           {referrals.map((referral) => (
             <div key={referral.id} className="referral-card">
-              <ReferralCardReact
+              <ReferralCardListReact
                 id={referral.id}
                 appName={referral.app_name}
                 code={referral.code}
@@ -164,9 +170,24 @@ export default function ReferralListClient({ initialReferrals, categoryId, searc
           ))}
         </div>
       ) : (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <h3 className="text-lg font-medium text-gray-900">No referrals found</h3>
+        <div className="text-center py-12 bg-gray-50 rounded-lg shadow">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <h3 className="mt-4 text-lg font-medium text-gray-900">No referrals found</h3>
           <p className="mt-2 text-gray-600">Try adjusting your search or filter criteria</p>
+          {!hideFilters && (
+            <button 
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedCategory(null);
+                setCurrentPage(1);
+              }}
+              className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            >
+              Clear filters
+            </button>
+          )}
         </div>
       )}
       

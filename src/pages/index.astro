@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import ReferralCard from '../components/ReferralCard.astro';
 import CategoryCard from '../components/CategoryCard.astro';
 import Hero from '../components/Hero.astro';
+import ReferralCardList from '../components/ReferralCardList.astro';
 import { supabase } from '../lib/supabase';
 
 // Fetch featured referral codes (most recent 6)
@@ -12,26 +13,28 @@ const { data: featuredReferrals } = await supabase
   .order('created_at', { ascending: false })
   .limit(6);
 
-// Fetch categories with referral code counts
-const { data: categoriesWithCounts } = await supabase
+// Fetch categories with proper referral code counts
+const { data: categories } = await supabase
   .from('categories')
   .select(`
     id,
     name,
     slug,
-    description,
-    referral_codes:referral_codes(count)
+    description
   `)
   .order('name');
 
-// Process categories to extract counts
-const categories = categoriesWithCounts?.map(category => ({
-  id: category.id,
-  name: category.name,
-  slug: category.slug,
-  description: category.description,
-  count: category.referral_codes.length
-}));
+// Get counts for each category
+if (categories) {
+  for (let category of categories) {
+    const { count } = await supabase
+      .from('referral_codes')
+      .select('*', { count: 'exact', head: true })
+      .eq('category_id', category.id);
+    
+    category.count = count || 0;
+  }
+}
 ---
 
 <Layout title="ReferralHub - Find and Share Referral Codes">
@@ -43,9 +46,9 @@ const categories = categoriesWithCounts?.map(category => ({
       <a href="/referrals" class="text-primary-600 hover:text-primary-800 text-sm font-medium">View all</a>
     </div>
     
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="space-y-4">
       {featuredReferrals && featuredReferrals.map((referral) => (
-        <ReferralCard
+        <ReferralCardList
           id={referral.id}
           appName={referral.app_name}
           code={referral.code}
@@ -53,6 +56,8 @@ const categories = categoriesWithCounts?.map(category => ({
           url={referral.url}
           userBenefit={referral.user_benefit}
           referrerBenefit={referral.referrer_benefit}
+          icon={referral.icon}
+          slug={referral.slug}
         />
       ))}
     </div>

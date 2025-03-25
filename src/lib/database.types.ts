@@ -13,23 +13,26 @@ export interface Database {
         Row: {
           id: number
           name: string
-          slug: string
           description: string | null
           created_at: string
+          slug: string | null
+          icon: string | null
         }
         Insert: {
           id?: number
           name: string
-          slug: string
           description?: string | null
           created_at?: string
+          slug?: string | null
+          icon?: string | null
         }
         Update: {
           id?: number
           name?: string
-          slug?: string
           description?: string | null
           created_at?: string
+          slug?: string | null
+          icon?: string | null
         }
         Relationships: []
       }
@@ -40,13 +43,15 @@ export interface Database {
           code: string
           description: string | null
           url: string
-          category_id: number
-          created_at: string
           user_benefit: string | null
           referrer_benefit: string | null
+          category_id: number
+          created_at: string
+          views: number
           icon: string | null
           slug: string | null
           meta_title: string | null
+          screenshots: string[] | null
         }
         Insert: {
           id?: number
@@ -54,13 +59,15 @@ export interface Database {
           code: string
           description?: string | null
           url: string
-          category_id: number
-          created_at?: string
           user_benefit?: string | null
           referrer_benefit?: string | null
+          category_id: number
+          created_at?: string
+          views?: number
           icon?: string | null
           slug?: string | null
           meta_title?: string | null
+          screenshots?: string[] | null
         }
         Update: {
           id?: number
@@ -68,13 +75,15 @@ export interface Database {
           code?: string
           description?: string | null
           url?: string
-          category_id?: number
-          created_at?: string
           user_benefit?: string | null
           referrer_benefit?: string | null
+          category_id?: number
+          created_at?: string
+          views?: number
           icon?: string | null
           slug?: string | null
           meta_title?: string | null
+          screenshots?: string[] | null
         }
         Relationships: [
           {
