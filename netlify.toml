@@ -1,11 +1,10 @@
 [build]
   command = "npm run build"
-  publish = "dist/client"
-  functions = "dist/server"
+  publish = "build/client"
 
 [[redirects]]
   from = "/*"
-  to = "/.netlify/functions/server"
+  to = "/index.html"
   status = 200
 
 [dev]
@@ -13,4 +12,8 @@
   targetPort = 3000
 
 [functions]
+  directory = "build/server"
   node_bundler = "esbuild"
+
+[[plugins]]
+  package = "@netlify/plugin-remix"

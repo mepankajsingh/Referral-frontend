@@ -6,7 +6,7 @@
     "build": "remix vite:build",
     "dev": "remix vite:dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
-    "start": "remix-serve ./dist/server/index.js",
+    "start": "remix-serve ./build/server/index.js",
     "typecheck": "tsc"
   },
   "dependencies": {
@@ -19,6 +19,7 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@netlify/plugin-remix": "^5.0.0",
     "@remix-run/dev": "latest",
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
