@@ -1,0 +1,16 @@
+[build]
+  command = "npm run build"
+  publish = "build/client"
+  functions = "build/server"
+
+[dev]
+  command = "npm run dev"
+  targetPort = 3000
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/server"
+  status = 200
+
+[functions]
+  node_bundler = "esbuild"
