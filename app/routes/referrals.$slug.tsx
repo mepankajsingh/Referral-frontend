@@ -4,6 +4,7 @@ import { useLoaderData, Link } from "@remix-run/react";
 import { getCategories, getReferralCodeBySlug, getReferralCodes } from "~/lib/supabase";
 import CategoryBadge from "~/components/CategoryBadge";
 import RecommendedReferrals from "~/components/RecommendedReferrals";
+import { useState } from "react";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data?.referral) {
@@ -46,6 +47,13 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 export default function ReferralDetailPage() {
   const { referral, category, similarReferrals } = useLoaderData<typeof loader>();
+  const [copied, setCopied] = useState(false);
+  
+  const handleCopyCode = () => {
+    navigator.clipboard.writeText(referral.code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
   
   return (
     <div className="bg-gray-50 min-h-screen">
@@ -65,9 +73,8 @@ export default function ReferralDetailPage() {
             <span className="text-gray-700 font-medium">{referral.service_name}</span>
           </nav>
           
-          {/* Header content with service name and logo - IMPROVED ALIGNMENT */}
+          {/* Header content with service name and logo */}
           <div className="flex items-center">
-            {/* Increased icon size from w-14/h-14 to w-20/h-20 */}
             {referral.logo_url ? (
               <img 
                 src={referral.logo_url} 
@@ -104,58 +111,77 @@ export default function ReferralDetailPage() {
         </div>
       </div>
       
+      {/* NEW: Prominent Referral Code Section */}
+      <div className="bg-indigo-50 border-b border-indigo-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="bg-white rounded-lg shadow-md border border-indigo-100 overflow-hidden">
+            <div className="p-5">
+              <div className="flex flex-col md:flex-row md:items-center gap-4">
+                <div className="flex-grow">
+                  <div className="flex items-center justify-between mb-2">
+                    <h2 className="text-lg font-bold text-gray-900 flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                      </svg>
+                      Referral Code
+                    </h2>
+                    {referral.url && (
+                      <a 
+                        href={referral.url} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center transition-colors"
+                      >
+                        Use This Referral
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                    )}
+                  </div>
+                  <div className="flex items-center">
+                    <div className="bg-gray-50 px-4 py-3 rounded-md border border-gray-200 flex-grow">
+                      <code className="text-lg font-mono text-indigo-800 font-semibold select-all">
+                        {referral.code}
+                      </code>
+                    </div>
+                    <button 
+                      onClick={handleCopyCode}
+                      className={`ml-3 px-4 py-3 rounded-md flex items-center transition-colors ${
+                        copied 
+                          ? 'bg-green-100 text-green-700 border border-green-200' 
+                          : 'bg-indigo-100 text-indigo-700 border border-indigo-200 hover:bg-indigo-200'
+                      }`}
+                      aria-label="Copy code to clipboard"
+                    >
+                      {copied ? (
+                        <>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Copied!
+                        </>
+                      ) : (
+                        <>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                          </svg>
+                          Copy Code
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
       {/* Main content section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-100">
           <div className="p-5">
-            {/* Referral code section - Now responsive */}
-            <div className="bg-gray-50 rounded-lg p-3 mb-4 border border-gray-100">
-              <div className="flex items-center justify-between mb-1">
-                <h2 className="text-base font-semibold text-gray-900 flex items-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1.5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                  </svg>
-                  Referral Code
-                </h2>
-                <div className="text-xs text-gray-500">Copy and use</div>
-              </div>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-                <code className="bg-white px-3 py-2 rounded-md text-gray-800 font-mono text-sm w-full sm:flex-grow border border-gray-200 select-all">
-                  {referral.code}
-                </code>
-                <button 
-                  onClick={() => {
-                    navigator.clipboard.writeText(referral.code);
-                    alert('Code copied to clipboard!');
-                  }}
-                  className="bg-indigo-600 text-white px-3 py-2 rounded-md hover:bg-indigo-700 transition-colors flex items-center whitespace-nowrap"
-                  aria-label="Copy code to clipboard"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                  </svg>
-                  Copy
-                </button>
-              </div>
-            </div>
-            
-            {/* CTA button - Moved above and made minimal */}
-            {referral.url && (
-              <div className="mb-4 text-center">
-                <a 
-                  href={referral.url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center text-indigo-600 hover:text-indigo-800 hover:underline transition-colors text-sm font-medium"
-                >
-                  Use This Referral Code
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </a>
-              </div>
-            )}
-            
             {/* Benefits section - side by side with smaller text */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div className="bg-green-50 rounded-lg p-3 border border-green-100">
@@ -183,7 +209,7 @@ export default function ReferralDetailPage() {
               <div className="mb-4 bg-gray-50 rounded-lg p-3 border border-gray-100">
                 <div className="flex items-center mb-1">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-600 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V7a2 2 0 01-2-2h14a2 2 0 012 2v10a2 2 0 01-2 2z" />
                   </svg>
                   <h2 className="text-base font-semibold text-gray-900">Terms & Conditions</h2>
                 </div>
@@ -198,7 +224,7 @@ export default function ReferralDetailPage() {
               <div className="mb-4">
                 <div className="flex items-center mb-1">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-600 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 20 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                   <h2 className="text-base font-semibold text-gray-900">Screenshot</h2>
                 </div>
@@ -212,7 +238,7 @@ export default function ReferralDetailPage() {
               </div>
             )}
             
-            {/* Recommended Referrals section - updated to match categories page styling */}
+            {/* Recommended Referrals section */}
             <RecommendedReferrals referrals={similarReferrals} 
               currentReferralId={referral.id} 
             />
