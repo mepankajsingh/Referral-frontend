@@ -13,6 +13,7 @@ import { getCategories } from "~/lib/supabase";
 import "./tailwind.css";
 import Header from "~/components/Header";
 import Footer from "~/components/Footer";
+import TopProgressBar from "~/components/TopProgressBar";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -56,6 +57,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body className="min-h-screen flex flex-col bg-gray-50">
+        <TopProgressBar />
         <Header categories={categories} />
         <main className="flex-grow">
           {children}
