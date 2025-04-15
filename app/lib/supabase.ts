@@ -29,6 +29,7 @@ export type ReferralCode = {
   updated_at: string;
   url?: string;
   featured: boolean;
+  slug: string;
 };
 
 // Database functions
@@ -102,6 +103,21 @@ export async function getReferralCodeById(id: string): Promise<ReferralCode | nu
   
   if (error) {
     console.error(`Error fetching referral code with id ${id}:`, error);
+    return null;
+  }
+  
+  return data;
+}
+
+export async function getReferralCodeBySlug(slug: string): Promise<ReferralCode | null> {
+  const { data, error } = await supabase
+    .from('referral_codes')
+    .select('*')
+    .eq('slug', slug)
+    .single();
+  
+  if (error) {
+    console.error(`Error fetching referral code with slug ${slug}:`, error);
     return null;
   }
   

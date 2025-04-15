@@ -9,7 +9,7 @@ interface EmptyStateProps {
 
 export default function EmptyState({ title, description, actionText, actionLink }: EmptyStateProps) {
   return (
-    <div className="text-center py-12">
+    <div className="text-center py-12 px-4 sm:px-6 lg:px-8 bg-white rounded-lg border border-gray-200 shadow-sm">
       <svg
         className="mx-auto h-12 w-12 text-gray-400"
         fill="none"
@@ -20,8 +20,8 @@ export default function EmptyState({ title, description, actionText, actionLink 
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
-          strokeWidth={2}
-          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V7a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2z"
+          strokeWidth={1.5}
+          d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
         />
       </svg>
       <h3 className="mt-2 text-lg font-medium text-gray-900">{title}</h3>
@@ -30,7 +30,7 @@ export default function EmptyState({ title, description, actionText, actionLink 
         <div className="mt-6">
           <Link
             to={actionLink}
-            className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700"
           >
             {actionText}
           </Link>
