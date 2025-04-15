@@ -85,10 +85,39 @@ export default function Footer() {
           </div>
         </div>
         
-        <div className="border-t border-gray-200 pt-8">
-          <p className="text-center text-sm text-gray-500">
-            &copy; {currentYear} ReferralHub. All rights reserved.
-          </p>
+        {/* Sanskrit Sloka Section */}
+        <div className="border-t border-gray-200 pt-6 pb-4">
+          <div className="flex flex-col items-center text-center">
+            <p className="text-xs text-gray-500 italic mb-2">
+              "विद्या ददाति विनयं विनयाद्याति पात्रताम् |<br />
+              पात्रत्वाद्धनमाप्नोति धनाद्धर्मं ततः सुखम् ||"
+            </p>
+            <p className="text-xs text-gray-600 mb-4">
+              "Knowledge gives humility, from humility comes worthiness, from worthiness one gets wealth, from wealth good deeds, and from that happiness."
+            </p>
+          </div>
+        </div>
+        
+        <div className="border-t border-gray-200 pt-6">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="text-center text-sm text-gray-500">
+              &copy; {currentYear} ReferralHub. All rights reserved.
+            </p>
+            
+            <div className="flex items-center mt-4 md:mt-0">
+              <div className="flex items-center mr-2">
+                {/* Indian Flag */}
+                <div className="w-6 h-4 mr-2 flex flex-col overflow-hidden border border-gray-300 rounded-sm">
+                  <div className="h-1/3 bg-[#FF9933]"></div>
+                  <div className="h-1/3 bg-white flex justify-center items-center">
+                    <div className="w-[6px] h-[6px] rounded-full border border-[#000080]"></div>
+                  </div>
+                  <div className="h-1/3 bg-[#138808]"></div>
+                </div>
+                <span className="text-xs text-gray-500 font-medium">Made in India</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </footer>

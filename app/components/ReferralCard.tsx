@@ -95,10 +95,10 @@ export default function ReferralCard({ referral }: { referral: ReferralCode }) {
               href={referral.url} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center px-3 py-1.5 border border-indigo-600 text-sm font-medium rounded text-white bg-indigo-600 hover:bg-indigo-700 transition-colors"
+              className="inline-flex items-center justify-center px-2 py-1 text-sm font-medium text-indigo-600 hover:text-indigo-800 hover:underline transition-colors"
             >
               Use Code
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
             </a>
