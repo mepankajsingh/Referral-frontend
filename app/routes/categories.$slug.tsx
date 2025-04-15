@@ -3,6 +3,7 @@ import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { getCategoryBySlug, getReferralCodes } from "~/lib/supabase";
 import ReferralCard from "~/components/ReferralCard";
+import EmptyState from "~/components/EmptyState";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   if (!data?.category) {
@@ -40,8 +41,8 @@ export default function CategoryPage() {
   const { category, referrals } = useLoaderData<typeof loader>();
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="text-center mb-12">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="text-center mb-8">
         <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
           {category.name} Referral Codes
         </h1>
@@ -52,16 +53,19 @@ export default function CategoryPage() {
         )}
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {referrals.map((referral) => (
-          <ReferralCard key={referral.id} referral={referral} />
-        ))}
-      </div>
-      
-      {referrals.length === 0 && (
-        <div className="text-center py-12">
-          <p className="text-gray-500">No referral codes available in this category yet.</p>
+      {referrals.length > 0 ? (
+        <div className="space-y-6">
+          {referrals.map((referral) => (
+            <ReferralCard key={referral.id} referral={referral} />
+          ))}
         </div>
+      ) : (
+        <EmptyState 
+          title="No referral codes found"
+          description="There are no referral codes available in this category yet."
+          actionText="Browse all referrals"
+          actionLink="/featured"
+        />
       )}
     </div>
   );

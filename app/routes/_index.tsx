@@ -43,7 +43,7 @@ export default function Index() {
               View All
             </a>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="space-y-4">
             {featuredReferrals.map((referral) => (
               <ReferralCard key={referral.id} referral={referral} />
             ))}
@@ -63,7 +63,7 @@ export default function Index() {
         {/* Recent Referrals */}
         <div>
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Recently Added</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="space-y-4">
             {recentReferrals.map((referral) => (
               <ReferralCard key={referral.id} referral={referral} />
             ))}
