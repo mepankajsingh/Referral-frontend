@@ -65,22 +65,23 @@ export default function ReferralDetailPage() {
             <span className="text-gray-700 font-medium">{referral.service_name}</span>
           </nav>
           
-          {/* Header content with service name and logo */}
+          {/* Header content with service name and logo - IMPROVED ALIGNMENT */}
           <div className="flex items-center">
+            {/* Increased icon size from w-14/h-14 to w-20/h-20 */}
             {referral.logo_url ? (
               <img 
                 src={referral.logo_url} 
                 alt={`${referral.service_name} logo`} 
-                className="w-14 h-14 object-contain rounded-lg mr-5 bg-white p-2 shadow-sm"
+                className="w-20 h-20 object-contain rounded-lg mr-6 bg-white p-3 shadow-sm"
               />
             ) : (
-              <div className="w-14 h-14 bg-white rounded-lg flex items-center justify-center mr-5 shadow-sm">
-                <span className="text-indigo-600 font-bold text-xl">
+              <div className="w-20 h-20 bg-white rounded-lg flex items-center justify-center mr-6 shadow-sm">
+                <span className="text-indigo-600 font-bold text-2xl">
                   {referral.service_name.charAt(0)}
                 </span>
               </div>
             )}
-            <div>
+            <div className="flex flex-col justify-center">
               <div className="flex items-center flex-wrap gap-2">
                 <h1 className="text-2xl font-extrabold text-gray-900">{referral.service_name}</h1>
                 {referral.featured && (
@@ -180,7 +181,7 @@ export default function ReferralDetailPage() {
               <div className="mb-4">
                 <div className="flex items-center mb-1">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-600 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 20 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                   <h2 className="text-base font-semibold text-gray-900">Screenshot</h2>
                 </div>
