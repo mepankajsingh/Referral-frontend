@@ -1,7 +1,31 @@
 import { Link } from "@remix-run/react";
 import type { ReferralCode } from "~/lib/supabase";
 
+// Simple HTML to plain text converter
+const htmlToPlainText = (html: string): string => {
+  // Create a temporary element to handle the conversion
+  if (typeof document !== 'undefined') {
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = html;
+    return tempElement.textContent || tempElement.innerText || '';
+  }
+  
+  // Server-side fallback: basic regex replacement
+  return html
+    .replace(/<[^>]*>/g, '') // Remove HTML tags
+    .replace(/&nbsp;/g, ' ') // Replace &nbsp; with spaces
+    .replace(/&amp;/g, '&') // Replace &amp; with &
+    .replace(/</g, '<') // Replace < with <
+    .replace(/>/g, '>') // Replace > with >
+    .replace(/&quot;/g, '"') // Replace &quot; with "
+    .replace(/&#39;/g, "'") // Replace &#39; with '
+    .trim(); // Trim whitespace
+};
+
 export default function ReferralCard({ referral }: { referral: ReferralCode }) {
+  // Convert HTML description to plain text
+  const plainDescription = htmlToPlainText(referral.description);
+  
   return (
     <div className="border border-gray-200 rounded-lg overflow-hidden hover:border-indigo-300 hover:shadow-sm transition-all duration-300 flex flex-col md:flex-row bg-white">
       {/* Logo/Icon Section - Now linked */}
@@ -37,7 +61,7 @@ export default function ReferralCard({ referral }: { referral: ReferralCode }) {
           )}
         </div>
         
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{referral.description}</p>
+        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{plainDescription}</p>
         
         <div className="flex flex-wrap gap-x-6 gap-y-2 mb-1">
           <div>

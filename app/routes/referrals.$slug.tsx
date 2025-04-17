@@ -4,6 +4,7 @@ import { useLoaderData, Link } from "@remix-run/react";
 import { getCategories, getReferralCodeBySlug, getReferralCodes } from "~/lib/supabase";
 import CategoryBadge from "~/components/CategoryBadge";
 import RecommendedReferrals from "~/components/RecommendedReferrals";
+import HtmlContent from "~/components/HtmlContent";
 import { useState } from "react";
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
@@ -105,7 +106,7 @@ export default function ReferralDetailPage() {
                   <CategoryBadge category={category} />
                 </div>
               )}
-              <p className="mt-2 text-sm text-gray-600 max-w-3xl">{referral.description}</p>
+              <HtmlContent html={referral.description} className="mt-2 text-sm text-gray-600 max-w-3xl" />
             </div>
           </div>
         </div>
@@ -191,7 +192,7 @@ export default function ReferralDetailPage() {
                   </svg>
                   <h2 className="text-base font-semibold text-green-800">You Get</h2>
                 </div>
-                <p className="text-sm text-green-700">{referral.user_benefit}</p>
+                <HtmlContent html={referral.user_benefit} className="text-sm text-green-700" />
               </div>
               <div className="bg-blue-50 rounded-lg p-3 border border-blue-100">
                 <div className="flex items-center mb-1">
@@ -200,7 +201,7 @@ export default function ReferralDetailPage() {
                   </svg>
                   <h2 className="text-base font-semibold text-blue-800">Referrer Gets</h2>
                 </div>
-                <p className="text-sm text-blue-700">{referral.referrer_benefit}</p>
+                <HtmlContent html={referral.referrer_benefit} className="text-sm text-blue-700" />
               </div>
             </div>
             
@@ -214,7 +215,7 @@ export default function ReferralDetailPage() {
                   <h2 className="text-base font-semibold text-gray-900">Terms & Conditions</h2>
                 </div>
                 <div className="text-sm text-gray-600">
-                  <p>{referral.terms}</p>
+                  <HtmlContent html={referral.terms} />
                 </div>
               </div>
             )}
