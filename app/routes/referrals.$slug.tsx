@@ -15,9 +15,17 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     ];
   }
   
+  // Use the custom title if available, otherwise fall back to service_name
+  const pageTitle = data.referral.title || `${data.referral.service_name} Referral Code - ReferralHub`;
+  
   return [
-    { title: `${data.referral.service_name} Referral Code - ReferralHub` },
+    { title: pageTitle },
     { name: "description", content: data.referral.description },
+    // Add additional meta tags for better SEO
+    { property: "og:title", content: pageTitle },
+    { property: "og:description", content: data.referral.description },
+    { name: "twitter:title", content: pageTitle },
+    { name: "twitter:description", content: data.referral.description }
   ];
 };
 

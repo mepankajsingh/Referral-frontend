@@ -30,6 +30,7 @@ export type ReferralCode = {
   url?: string;
   featured: boolean;
   slug: string;
+  title?: string; // Added title field
 };
 
 // Database functions
